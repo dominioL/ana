@@ -21,9 +21,9 @@ public final class AnalisadorDeNomesDeArquivos {
 	private int quantidadeDeArquivosComAviso = 0;
 	private int quantidadeDeArquivosInvalidos = 0;
 	private final String NOME_DA_PASTA_RAIZ = "/home/lucas/lucas";
-	
+
 	private AnalisadorDeNomesDeArquivos() {
-		final String extensoesValidas = "(dix[.]xml|mp3|mp4|tar[.]gz|[a-z]{1,6})";
+		final String extensoesValidas = "(mas2j|dix[.]xml|mp3|mp4|tar[.]gz|[a-z]{1,6})";
 		final String parteDeNomesValidos = "([a-z]|[0-9]*[A-Z])*[0-9]*";
 		final String nomesValidos = "[a-z]" + parteDeNomesValidos;
 		final String nomesValidosComAvisos = "[a-z](" + parteDeNomesValidos + "[A-Z]{2,}" + parteDeNomesValidos + ")+";
@@ -31,30 +31,37 @@ public final class AnalisadorDeNomesDeArquivos {
 		nomesDeArquivosPermitidos.add(nomesValidos + "[.]" + extensoesValidas);
 		nomesDeArquivosPermitidosComExcecao = new LinkedList<String>();
 		nomesDeArquivosPermitidosComExcecao.add("[A-Z]" + parteDeNomesValidos + "[.]java");
+		nomesDeArquivosPermitidosComExcecao.add("[A-Z]" + parteDeNomesValidos + "[.]caneca");
+		nomesDeArquivosPermitidosComExcecao.add("[A-Z]" + parteDeNomesValidos + "[.]tokens");
+		nomesDeArquivosPermitidosComExcecao.add("[A-Z]" + parteDeNomesValidos + "[.]g");
+		nomesDeArquivosPermitidosComExcecao.add("[A-Z]" + parteDeNomesValidos + "[.]casm");
+		nomesDeArquivosPermitidosComExcecao.add("[.]gitignore");
+		nomesDeArquivosPermitidosComExcecao.add("br4");
 		nomesDeArquivosPermitidosComAviso = new LinkedList<String>();
 		nomesDeArquivosPermitidosComAviso.add(nomesValidosComAvisos + "[.]" + extensoesValidas);
 		nomesDeDiretoriosPermitidos = new LinkedList<String>();
 		nomesDeDiretoriosPermitidos.add(nomesValidos);
 		nomesDeDiretoriosPermitidosComExcecao = new LinkedList<String>();
-		nomesDeDiretoriosPermitidosComExcecao.add("[.]pessoas");
 		nomesDeDiretoriosPermitidosComAviso = new LinkedList<String>();
 		nomesDeDiretoriosPermitidosComAviso.add(nomesValidosComAvisos);
 		File pastaRaiz = new File(NOME_DA_PASTA_RAIZ);
 		entrarNoDiretorio(pastaRaiz);
 		mostrarQuantidadeDeArquivosEDiretorios();
 	}
-	
+
 	private void entrarNoDiretorio(File pastaRaiz) {
-		checarNomeDeDiretorio(pastaRaiz);
-		for (File arquivo : pastaRaiz.listFiles()) {
-			if (arquivo.isDirectory()) {
-				entrarNoDiretorio(arquivo);
-			} else {
-				checarNomeDeArquivo(arquivo);
+		if (!pastaRaiz.getAbsolutePath().equals("/home/lucas/lucas/ufsc/cienciasDaComputacao/.git")) {
+			checarNomeDeDiretorio(pastaRaiz);
+			for (File arquivo : pastaRaiz.listFiles()) {
+				if (arquivo.isDirectory()) {
+					entrarNoDiretorio(arquivo);
+				} else {
+					checarNomeDeArquivo(arquivo);
+				}
 			}
 		}
 	}
-	
+
 	private void checarNomeDeDiretorio(File diretorio) {
 		quantidadeDeDiretorios++;
 		String nomeDoDiretorio = diretorio.getName();
@@ -70,7 +77,7 @@ public final class AnalisadorDeNomesDeArquivos {
 			quantidadeDeDiretoriosInvalidos++;
 		}
 	}
-	
+
 	private void checarNomeDeArquivo(File arquivo) {
 		quantidadeDeArquivos++;
 		String nomeDoArquivo = arquivo.getName();
@@ -86,7 +93,7 @@ public final class AnalisadorDeNomesDeArquivos {
 			quantidadeDeArquivosInvalidos++;
 		}
 	}
-	
+
 	private boolean estaNaLista(String nome, List<String> lista) {
 		boolean combinou = false;
 		Iterator<String> iteradorDePermitidos = lista.iterator();
@@ -97,7 +104,7 @@ public final class AnalisadorDeNomesDeArquivos {
 		}
 		return combinou;
 	}
-	
+
 	private void mostrarMensagem(String local, String tipo, String nomeDoArquivo, String caminho) {
 		System.out.println(String.format("[%s] [%s] '%s' '%s'", local, tipo, nomeDoArquivo, caminho));
 	}
@@ -114,7 +121,7 @@ public final class AnalisadorDeNomesDeArquivos {
 		System.out.println("Arquivos com aviso:\t" + quantidadeDeArquivosComAviso);
 		System.out.println("Arquivos inválidos:\t" + quantidadeDeArquivosInvalidos);
 	}
-	
+
 	public static void main(String[] argumentos) {
 		new AnalisadorDeNomesDeArquivos();
 	}
